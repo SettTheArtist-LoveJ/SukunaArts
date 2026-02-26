@@ -118,7 +118,16 @@ export default function App() {
 
 // ===== STYLES =====
 const styles: Record<string, React.CSSProperties> = {
-  body: { fontFamily: "'Rajdhani', sans-serif", background: "#0b0b0f", color: "#edf2f4", minHeight: "100vh" },
+  body: {
+    fontFamily: "'Rajdhani', sans-serif",
+    background: "#0b0b0f",
+    color: "#edf2f4",
+    minHeight: "100vh",
+    margin: 0,          // ✅ reset margen
+    padding: 0,         // ✅ reset padding
+    width: "100%",      // ✅ asegurar ancho completo
+    overflowX: "hidden" // ✅ eliminar scroll lateral
+  },
   bgParticles: { position: "fixed", top: 0, left: 0, width: "100%", height: "100%", pointerEvents: "none", zIndex: 0, overflow: "hidden" },
   nav: { position: "fixed", top: 0, left: 0, right: 0, height: "70px", display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0 2rem", background: "rgba(11,11,15,0.85)", backdropFilter: "blur(12px)", zIndex: 100 },
   logo: { fontFamily: "'Orbitron', sans-serif", fontSize: "1.6rem", fontWeight: 900, background: "linear-gradient(135deg, #e63946, #f72585)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" },
