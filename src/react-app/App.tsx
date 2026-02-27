@@ -268,9 +268,71 @@ function TicTacToe() {
   // ========================
   // PANTALLA DE DIFICULTAD
   // ========================
-  if (!difficulty) {
-    return (
-      <div style={{ textAlign: "center" }}>
+if (!difficulty) {
+  return (
+    <div style={{ 
+      textAlign: "center",
+      background: "#15151d",
+      padding: "30px",
+      borderRadius: "15px"
+    }}>
+      <h3 style={{ marginBottom: "20px" }}>Elige dificultad</h3>
+
+      <div>
+        <button
+          onClick={() => setDifficulty("easy")}
+          style={{
+            background: "#ff003c",
+            border: "2px solid #ff003c",
+            color: "white",
+            padding: "12px 25px",
+            margin: "8px",
+            borderRadius: "10px",
+            cursor: "pointer",
+            boxShadow: "0 0 15px #ff003c, 0 0 30px #ff003c",
+            fontWeight: "bold"
+          }}
+        >
+          🟢 Fácil
+        </button>
+
+        <button
+          onClick={() => setDifficulty("medium")}
+          style={{
+            background: "#ff003c",
+            border: "2px solid #ff003c",
+            color: "white",
+            padding: "12px 25px",
+            margin: "8px",
+            borderRadius: "10px",
+            cursor: "pointer",
+            boxShadow: "0 0 15px #ff003c, 0 0 30px #ff003c",
+            fontWeight: "bold"
+          }}
+        >
+          🟡 Medio
+        </button>
+
+        <button
+          onClick={() => setDifficulty("hard")}
+          style={{
+            background: "#ff003c",
+            border: "2px solid #ff003c",
+            color: "white",
+            padding: "12px 25px",
+            margin: "8px",
+            borderRadius: "10px",
+            cursor: "pointer",
+            boxShadow: "0 0 15px #ff003c, 0 0 30px #ff003c",
+            fontWeight: "bold"
+          }}
+        >
+          🔴 Imposible
+        </button>
+      </div>
+    </div>
+  );
+}
         <h3>Elige dificultad</h3>
         <button onClick={() => setDifficulty("easy")}>🟢 Fácil</button>
         <button onClick={() => setDifficulty("medium")} style={{ margin: "0 10px" }}>🟡 Medio</button>
@@ -308,8 +370,7 @@ function TicTacToe() {
               justifyContent: "center",
               fontSize: "3rem",
               fontWeight: "bold",
-              background: "#ff003c",
-              boxShadow: "0 0 15px #ff003c, 0 0 30px #ff003c",
+              background: "#1c1c25",
               borderRadius: "12px",
               cursor: "pointer"
             }}
@@ -320,7 +381,22 @@ function TicTacToe() {
         ))}
       </div>
 
-      <button onClick={resetGame}>Cambiar dificultad</button>
+      <button
+  onClick={resetGame}
+  style={{
+    background: "#ff003c",
+    border: "2px solid #ff003c",
+    color: "white",
+    padding: "10px 20px",
+    borderRadius: "8px",
+    cursor: "pointer",
+    boxShadow: "0 0 15px #ff003c, 0 0 30px #ff003c",
+    fontWeight: "bold",
+    marginTop: "15px"
+  }}
+>
+  Cambiar dificultad
+</button>
     </div>
   );
 }
