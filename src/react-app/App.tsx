@@ -122,6 +122,7 @@ export default function App() {
 }
 
 // ===== STYLES =====
+ // ===========3 EN RAYA INICIO =============
 function TicTacToe() {
   const [board, setBoard] = useState<(string | null)[]>(Array(9).fill(null));
   const [winner, setWinner] = useState<string | null>(null);
@@ -307,7 +308,8 @@ function TicTacToe() {
               justifyContent: "center",
               fontSize: "3rem",
               fontWeight: "bold",
-              background: "#1c1c25",
+              background: "#ff003c",
+              boxShadow: "0 0 15px #ff003c, 0 0 30px #ff003c",
               borderRadius: "12px",
               cursor: "pointer"
             }}
@@ -337,6 +339,7 @@ function calculateWinner(board: (string | null)[]) {
   }
   return null;
 }
+// ===========3 EN RAYA FIN =============
 const styles: Record<string, React.CSSProperties> = {
   body: {
     fontFamily: "'Rajdhani', sans-serif",
