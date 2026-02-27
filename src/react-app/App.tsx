@@ -10,6 +10,7 @@ interface Game {
   desc: string;
 }
 
+  // 👇 NUEVOS JUEGOS O CAMBIOS O PARA AGREGAR MAS CUADROS DE JUEGOS 
 export default function App() {
   const [games] = useState<Game[]>([
     { id: 'snake', name: 'Snake', icon: '🐍', category: 'arcade', tag: 'Arcade', players: '12K', desc: 'Guia la serpiente y recoge la comida.' },
