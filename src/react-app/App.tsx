@@ -125,12 +125,16 @@ export default function App() {
 function TicTacToe() {
   const [board, setBoard] = useState<(string | null)[]>(Array(9).fill(null));
   const [winner, setWinner] = useState<string | null>(null);
+  const [difficulty, setDifficulty] = useState<"easy" | "medium" | "hard" | null>(null);
 
   const player = "X";
   const bot = "O";
 
+  // ========================
+  // JUGADA DEL JUGADOR
+  // ========================
   function handleClick(index: number) {
-    if (board[index] || winner) return;
+    if (board[index] || winner || !difficulty) return;
 
     const newBoard = [...board];
     newBoard[index] = player;
@@ -142,30 +146,136 @@ function TicTacToe() {
       return;
     }
 
-    // Turno del BOT después de 500ms
     setTimeout(() => botMove(newBoard), 500);
   }
 
+  // ========================
+  // BOT SEGÚN DIFICULTAD
+  // ========================
   function botMove(currentBoard: (string | null)[]) {
-    const emptyIndexes = currentBoard
-      .map((val, i) => (val === null ? i : null))
-      .filter(v => v !== null) as number[];
+    if (!difficulty) return;
 
-    if (emptyIndexes.length === 0) return;
+    if (difficulty === "easy") {
+      randomMove(currentBoard);
+    } 
+    else if (difficulty === "medium") {
+      smartMove(currentBoard);
+    } 
+    else {
+      bestMove(currentBoard); // minimax
+    }
+  }
 
-    const randomIndex = emptyIndexes[Math.floor(Math.random() * emptyIndexes.length)];
+  // 🟢 EASY
+  function randomMove(currentBoard: (string | null)[]) {
+    const empty = getEmpty(currentBoard);
+    const randomIndex = empty[Math.floor(Math.random() * empty.length)];
+    placeBot(currentBoard, randomIndex);
+  }
+
+  // 🟡 MEDIUM
+  function smartMove(currentBoard: (string | null)[]) {
+    const empty = getEmpty(currentBoard);
+
+    // intentar ganar
+    for (let i of empty) {
+      const test = [...currentBoard];
+      test[i] = bot;
+      if (calculateWinner(test) === bot) {
+        placeBot(currentBoard, i);
+        return;
+      }
+    }
+
+    // bloquear
+    for (let i of empty) {
+      const test = [...currentBoard];
+      test[i] = player;
+      if (calculateWinner(test) === player) {
+        placeBot(currentBoard, i);
+        return;
+      }
+    }
+
+    randomMove(currentBoard);
+  }
+
+  // 🔴 HARD (Minimax)
+  function bestMove(currentBoard: (string | null)[]) {
+    let bestScore = -Infinity;
+    let move = -1;
+
+    for (let i of getEmpty(currentBoard)) {
+      const test = [...currentBoard];
+      test[i] = bot;
+      const score = minimax(test, 0, false);
+      if (score > bestScore) {
+        bestScore = score;
+        move = i;
+      }
+    }
+
+    placeBot(currentBoard, move);
+  }
+
+  function minimax(board: (string | null)[], depth: number, isMaximizing: boolean): number {
+    const result = calculateWinner(board);
+    if (result === bot) return 10 - depth;
+    if (result === player) return depth - 10;
+    if (getEmpty(board).length === 0) return 0;
+
+    if (isMaximizing) {
+      let bestScore = -Infinity;
+      for (let i of getEmpty(board)) {
+        const test = [...board];
+        test[i] = bot;
+        bestScore = Math.max(bestScore, minimax(test, depth + 1, false));
+      }
+      return bestScore;
+    } else {
+      let bestScore = Infinity;
+      for (let i of getEmpty(board)) {
+        const test = [...board];
+        test[i] = player;
+        bestScore = Math.min(bestScore, minimax(test, depth + 1, true));
+      }
+      return bestScore;
+    }
+  }
+
+  function placeBot(currentBoard: (string | null)[], index: number) {
     const newBoard = [...currentBoard];
-    newBoard[randomIndex] = bot;
-
+    newBoard[index] = bot;
     setBoard(newBoard);
 
     const win = calculateWinner(newBoard);
     if (win) setWinner(win);
   }
 
+  function getEmpty(board: (string | null)[]) {
+    return board
+      .map((v, i) => (v === null ? i : null))
+      .filter(v => v !== null) as number[];
+  }
+
   function resetGame() {
     setBoard(Array(9).fill(null));
     setWinner(null);
+    setDifficulty(null);
+  }
+
+  // ========================
+  // PANTALLA DE DIFICULTAD
+  // ========================
+  if (!difficulty) {
+    return (
+      <div style={{ textAlign: "center" }}>
+        <h3>Elige dificultad</h3>
+        <button onClick={() => setDifficulty("easy")}>🟢 Fácil</button>
+        <button onClick={() => setDifficulty("medium")} style={{ margin: "0 10px" }}>🟡 Medio</button>
+        <button onClick={() => setDifficulty("hard")}>🔴 Imposible</button>
+      </div>
+    );
   }
 
   return (
@@ -199,8 +309,7 @@ function TicTacToe() {
               fontWeight: "bold",
               background: "#1c1c25",
               borderRadius: "12px",
-              cursor: "pointer",
-              userSelect: "none"
+              cursor: "pointer"
             }}
           >
             {cell === "X" && <span style={{ color: "#f72585" }}>X</span>}
@@ -209,7 +318,7 @@ function TicTacToe() {
         ))}
       </div>
 
-      <button onClick={resetGame}>Reiniciar</button>
+      <button onClick={resetGame}>Cambiar dificultad</button>
     </div>
   );
 }
