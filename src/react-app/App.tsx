@@ -124,51 +124,88 @@ export default function App() {
 // ===== STYLES =====
 function TicTacToe() {
   const [board, setBoard] = useState<(string | null)[]>(Array(9).fill(null));
-  const [isX, setIsX] = useState(true);
+  const [winner, setWinner] = useState<string | null>(null);
 
-  const winner = calculateWinner(board);
+  const player = "X";
+  const bot = "O";
 
   function handleClick(index: number) {
     if (board[index] || winner) return;
 
     const newBoard = [...board];
-    newBoard[index] = isX ? "X" : "O";
+    newBoard[index] = player;
     setBoard(newBoard);
-    setIsX(!isX);
+
+    const win = calculateWinner(newBoard);
+    if (win) {
+      setWinner(win);
+      return;
+    }
+
+    // Turno del BOT después de 500ms
+    setTimeout(() => botMove(newBoard), 500);
+  }
+
+  function botMove(currentBoard: (string | null)[]) {
+    const emptyIndexes = currentBoard
+      .map((val, i) => (val === null ? i : null))
+      .filter(v => v !== null) as number[];
+
+    if (emptyIndexes.length === 0) return;
+
+    const randomIndex = emptyIndexes[Math.floor(Math.random() * emptyIndexes.length)];
+    const newBoard = [...currentBoard];
+    newBoard[randomIndex] = bot;
+
+    setBoard(newBoard);
+
+    const win = calculateWinner(newBoard);
+    if (win) setWinner(win);
   }
 
   function resetGame() {
     setBoard(Array(9).fill(null));
-    setIsX(true);
+    setWinner(null);
   }
 
   return (
     <div style={{ textAlign: "center" }}>
-      <h3>{winner ? `Ganador: ${winner}` : `Turno: ${isX ? "X" : "O"}`}</h3>
+      <h3>
+        {winner
+          ? winner === player
+            ? "🎉 Ganaste!"
+            : "🤖 El Bot ganó!"
+          : "Tu turno (X)"}
+      </h3>
 
       <div style={{
         display: "grid",
-        gridTemplateColumns: "repeat(3, 80px)",
-        gap: "10px",
+        gridTemplateColumns: "repeat(3, 100px)",
+        gap: "12px",
         justifyContent: "center",
         margin: "20px 0"
       }}>
         {board.map((cell, i) => (
-          <button
+          <div
             key={i}
             onClick={() => handleClick(i)}
             style={{
-              width: "80px",
-              height: "80px",
-              fontSize: "2rem",
-              background: "#222",
-              color: "#fff",
-              border: "2px solid #f72585",
-              cursor: "pointer"
+              width: "100px",
+              height: "100px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "3rem",
+              fontWeight: "bold",
+              background: "#1c1c25",
+              borderRadius: "12px",
+              cursor: "pointer",
+              userSelect: "none"
             }}
           >
-            {cell}
-          </button>
+            {cell === "X" && <span style={{ color: "#f72585" }}>X</span>}
+            {cell === "O" && <span style={{ color: "#4cc9f0" }}>O</span>}
+          </div>
         ))}
       </div>
 
