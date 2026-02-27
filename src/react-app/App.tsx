@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import ChessGame from "./ChessGame";
 
 interface Game {
   id: string;
@@ -109,7 +108,6 @@ export default function App() {
             <h3>{currentGame.name}</h3>
             <p>{currentGame.desc}</p>
 {currentGame.id === "tictactoe" && <TicTacToe />}
-{currentGame.id === "chess" && <ChessGame />}
           </div>
         </div>
       )}
