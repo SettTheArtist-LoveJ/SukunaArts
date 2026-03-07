@@ -51,7 +51,6 @@ export default function ChessGame() {
   function handleClick(row: number, col: number) {
     const piece = board[row][col];
 
-    // Si no hay selección previa
     if (!selected) {
       if (piece && piece.color === turn) {
         setSelected([row, col]);
@@ -67,15 +66,18 @@ export default function ChessGame() {
       return;
     }
 
-    // Si haces click en la misma casilla → deselecciona
     if (sr === row && sc === col) {
       setSelected(null);
       return;
     }
 
-    // No permitir comer pieza del mismo color
     if (piece && piece.color === selectedPiece.color) {
       setSelected([row, col]);
+      return;
+    }
+
+    if (!isValidMove(selectedPiece, board, sr, sc, row, col)) {
+      setSelected(null);
       return;
     }
 
@@ -125,7 +127,6 @@ export default function ChessGame() {
                   border: isSelected
                     ? "3px solid red"
                     : "1px solid black",
-                  transition: "0.2s",
                 }}
               >
                 {cell ? pieceIcon(cell.type, cell.color) : ""}
@@ -136,6 +137,68 @@ export default function ChessGame() {
       </div>
     </div>
   );
+}
+
+function isValidMove(
+  piece: Piece,
+  board: (Piece | null)[][],
+  fr: number,
+  fc: number,
+  tr: number,
+  tc: number
+): boolean {
+
+  const dr = tr - fr;
+  const dc = tc - fc;
+
+  switch (piece.type) {
+
+    case "pawn": {
+      const dir = piece.color === "white" ? -1 : 1;
+
+      if (dc === 0 && !board[tr][tc]) {
+        if (dr === dir) return true;
+
+        if (
+          (piece.color === "white" && fr === 6 && dr === -2) ||
+          (piece.color === "black" && fr === 1 && dr === 2)
+        ) {
+          return !board[fr + dir][fc];
+        }
+      }
+
+      if (Math.abs(dc) === 1 && dr === dir && board[tr][tc]) {
+        return true;
+      }
+
+      return false;
+    }
+
+    case "rook":
+      return fr === tr || fc === tc;
+
+    case "bishop":
+      return Math.abs(dr) === Math.abs(dc);
+
+    case "queen":
+      return (
+        fr === tr ||
+        fc === tc ||
+        Math.abs(dr) === Math.abs(dc)
+      );
+
+    case "knight":
+      return (
+        (Math.abs(dr) === 2 && Math.abs(dc) === 1) ||
+        (Math.abs(dr) === 1 && Math.abs(dc) === 2)
+      );
+
+    case "king":
+      return Math.abs(dr) <= 1 && Math.abs(dc) <= 1;
+
+    default:
+      return false;
+  }
 }
 
 function pieceIcon(type: PieceType, color: Color): string {
