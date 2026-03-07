@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import ChessGame from "./ChessGame";
 import TicTacToe from "./TicTacToe";
+import Secret from "./Secret";
 
 interface Game {
   id: string;
@@ -26,6 +27,11 @@ export default function App() {
 
   const [category, setCategory] = useState("todos");
   const [currentGame, setCurrentGame] = useState<Game | null>(null);
+  const [page,setPage] = useState("home");
+
+if(page === "secret"){
+  return <Secret goBack={() => setPage("home")} />
+}
 
   const filteredGames = category === "todos" ? games : games.filter(g => g.category === category);
 
@@ -100,6 +106,14 @@ export default function App() {
             </div>
           ))}
         </div>
+        <div style={{textAlign:"center",marginTop:"40px"}}>
+<button 
+style={styles.btnPrimary}
+onClick={()=>setPage("secret")}
+>
+🔒 Área Secreta
+</button>
+</div>
       </section>
 
       {/* MODAL */}
