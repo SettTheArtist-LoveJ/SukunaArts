@@ -52,9 +52,7 @@ export default function App() {
         <div style={styles.logo}>SUKUNA<span style={{ color: "#f72585" }}>ARTS</span></div>
         <ul style={styles.navLinks}>
           {["Inicio",
-            "Juegos",
-            "Destacado",
-            "Comunidad"].map((item) => (
+            "Juegos"].map((item) => (
             <li key={item}><a href={`#${item.toLowerCase()}`} style={styles.navLink}>{item}</a></li>
           ))}
         </ul>
