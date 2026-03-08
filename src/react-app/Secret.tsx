@@ -6,7 +6,7 @@ const [date,setDate] = useState("");
 const [access,setAccess] = useState(false);
 
 // 👇 FECHA SECRETA
-const secretDate = "2026-03-25";
+const secretDate = "2022-04-31";
 
 function checkPassword(){
 if(date === secretDate){
