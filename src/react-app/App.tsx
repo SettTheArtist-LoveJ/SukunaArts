@@ -285,10 +285,11 @@ const styles: Record<string, React.CSSProperties> = {
   },
 
   gamesGrid:{
-    display:"grid",
-    gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",
-    gap:"20px"
-  },
+  display:"grid",
+  gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",
+  gap:"20px",
+  marginTop:"30px"
+},
 
   gameCard:{
     background:"#15151d",
