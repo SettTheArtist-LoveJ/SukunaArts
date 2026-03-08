@@ -30,16 +30,30 @@ function Home() {
   const [category, setCategory] = useState("todos");
   const [currentGame, setCurrentGame] = useState<Game | null>(null);
 
-  const filteredGames = category === "todos" ? games : games.filter(g => g.category === category);
+  const filteredGames = category === "todos"
+    ? games
+    : games.filter(g => g.category === category);
 
   useEffect(() => {
     const container = document.getElementById("particles");
     if (container) {
       container.innerHTML = "";
+
       for (let i = 0; i < 40; i++) {
         const span = document.createElement("span");
+
+        span.style.position = "absolute";
+        span.style.background = "#ffffff33";
+        span.style.borderRadius = "50%";
+
         span.style.left = Math.random() * 100 + "%";
-        span.style.width = span.style.height = 2 + Math.random() * 3 + "px";
+        span.style.top = Math.random() * 100 + "%";
+
+        const size = 2 + Math.random() * 3;
+
+        span.style.width = size + "px";
+        span.style.height = size + "px";
+
         container.appendChild(span);
       }
     }
@@ -50,36 +64,49 @@ function Home() {
       <div id="particles" style={styles.bgParticles}></div>
 
       <nav style={styles.nav}>
-        <div style={styles.logo}>SUKUNA<span style={{ color: "#f72585" }}>ARTS</span></div>
+        <div style={styles.logo}>
+          SUKUNA<span style={{ color: "#f72585" }}>ARTS</span>
+        </div>
+
         <ul style={styles.navLinks}>
-         {["Inicio","Juegos"].map((item) => (
-  <li key={item}>
-    <a
-      href={`#${item.toLowerCase()}`}
-      style={styles.navLink}
-      onClick={(e) => {
-        e.preventDefault();
-        document
-          .getElementById(item.toLowerCase())
-          ?.scrollIntoView({ behavior: "smooth" });
-      }}
-    >
-      {item}
-    </a>
-  </li>
-))}
+          {["Inicio", "Juegos"].map((item) => (
+            <li key={item}>
+              <a
+                href={`#${item.toLowerCase()}`}
+                style={styles.navLink}
+                onClick={(e) => {
+                  e.preventDefault();
+                  document
+                    .getElementById(item.toLowerCase())
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                {item}
+              </a>
+            </li>
+          ))}
         </ul>
       </nav>
 
       <section style={styles.hero} id="inicio">
         <div style={styles.heroBadge}>Portal de Juegos Online</div>
-        <h1 style={styles.heroTitle}>SUKUNA<span style={styles.highlight}>ARTS</span></h1>
-        <p style={styles.heroDesc}>Descubre una colección de juegos clásicos y desafiantes.</p>
+
+        <h1 style={styles.heroTitle}>
+          SUKUNA<span style={styles.highlight}>ARTS</span>
+        </h1>
+
+        <p style={styles.heroDesc}>
+          Descubre una colección de juegos clásicos y desafiantes.
+        </p>
 
         <div style={styles.heroButtons}>
           <button
             style={styles.btnPrimary}
-            onClick={() => document.getElementById("juegos")?.scrollIntoView({ behavior: "smooth" })}
+            onClick={() =>
+              document
+                .getElementById("juegos")
+                ?.scrollIntoView({ behavior: "smooth" })
+            }
           >
             Jugar Ahora
           </button>
@@ -100,7 +127,7 @@ function Home() {
         </div>
 
         <div style={styles.categories}>
-          {["todos","arcade","puzzle","estrategia"].map(cat => (
+          {["todos", "arcade", "puzzle", "estrategia"].map((cat) => (
             <button
               key={cat}
               style={category === cat ? styles.catBtnActive : styles.catBtn}
@@ -112,8 +139,12 @@ function Home() {
         </div>
 
         <div style={styles.gamesGrid}>
-          {filteredGames.map(game => (
-            <div key={game.id} style={styles.gameCard} onClick={() => setCurrentGame(game)}>
+          {filteredGames.map((game) => (
+            <div
+              key={game.id}
+              style={styles.gameCard}
+              onClick={() => setCurrentGame(game)}
+            >
               <div style={styles.gameThumb}>{game.icon}</div>
               <h3>{game.name}</h3>
             </div>
@@ -122,9 +153,20 @@ function Home() {
       </section>
 
       {currentGame && (
-        <div style={styles.modalOverlay} onClick={() => setCurrentGame(null)}>
-          <div style={styles.modal} onClick={(e) => e.stopPropagation()}>
-            <button style={styles.modalClose} onClick={() => setCurrentGame(null)}>&times;</button>
+        <div
+          style={styles.modalOverlay}
+          onClick={() => setCurrentGame(null)}
+        >
+          <div
+            style={styles.modal}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              style={styles.modalClose}
+              onClick={() => setCurrentGame(null)}
+            >
+              ×
+            </button>
 
             {currentGame.id === "tictactoe" && <TicTacToe />}
             {currentGame.id === "chess" && <ChessGame />}
@@ -150,32 +192,154 @@ export default function App() {
 }
 
 const styles: Record<string, React.CSSProperties> = {
-  body:{fontFamily:"sans-serif",background:"#0b0b0f",color:"#fff",minHeight:"100vh"},
-  nav:{display:"flex",justifyContent:"space-between",padding:"20px"},
+
+  body:{
+    fontFamily:"sans-serif",
+    background:"#0b0b0f",
+    color:"#fff",
+    minHeight:"100vh",
+    position:"relative"
+  },
+
+  nav:{
+    display:"flex",
+    justifyContent:"space-between",
+    padding:"20px",
+    position:"relative",
+    zIndex:1
+  },
+
   logo:{fontWeight:900,fontSize:"20px"},
-  navLinks:{display:"flex",gap:"20px",listStyle:"none"},
-  navLink:{color:"#aaa",textDecoration:"none"},
-  hero:{textAlign:"center",padding:"120px 20px"},
+
+  navLinks:{
+    display:"flex",
+    gap:"20px",
+    listStyle:"none"
+  },
+
+  navLink:{
+    color:"#aaa",
+    textDecoration:"none"
+  },
+
+  hero:{
+    textAlign:"center",
+    padding:"120px 20px",
+    position:"relative",
+    zIndex:1
+  },
+
   heroBadge:{color:"#e63946"},
+
   heroTitle:{fontSize:"48px"},
+
   highlight:{color:"#f72585"},
+
   heroDesc:{color:"#aaa"},
-  heroButtons:{display:"flex",gap:"10px",justifyContent:"center"},
-  btnPrimary:{background:"#e63946",border:"none",padding:"10px 20px",cursor:"pointer",color:"#fff"},
-  section:{padding:"60px 20px"},
+
+  heroButtons:{
+    display:"flex",
+    gap:"10px",
+    justifyContent:"center"
+  },
+
+  btnPrimary:{
+    background:"#e63946",
+    border:"none",
+    padding:"10px 20px",
+    cursor:"pointer",
+    color:"#fff"
+  },
+
+  section:{
+    padding:"60px 20px",
+    position:"relative",
+    zIndex:1
+  },
+
   sectionHeader:{textAlign:"center"},
-  line:{display:"block",width:"60px",height:"3px",background:"#e63946",margin:"10px auto"},
-  categories:{display:"flex",gap:"10px",justifyContent:"center"},
-  catBtn:{padding:"8px 15px",cursor:"pointer"},
-  catBtnActive:{padding:"8px 15px",background:"#e63946",cursor:"pointer"},
-  gamesGrid:{display:"grid",gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",gap:"20px"},
-  gameCard:{background:"#15151d",padding:"20px",cursor:"pointer"},
+
+  line:{
+    display:"block",
+    width:"60px",
+    height:"3px",
+    background:"#e63946",
+    margin:"10px auto"
+  },
+
+  categories:{
+    display:"flex",
+    gap:"10px",
+    justifyContent:"center"
+  },
+
+  catBtn:{
+    padding:"8px 15px",
+    cursor:"pointer"
+  },
+
+  catBtnActive:{
+    padding:"8px 15px",
+    background:"#e63946",
+    cursor:"pointer"
+  },
+
+  gamesGrid:{
+    display:"grid",
+    gridTemplateColumns:"repeat(auto-fill,minmax(200px,1fr))",
+    gap:"20px"
+  },
+
+  gameCard:{
+    background:"#15151d",
+    padding:"20px",
+    cursor:"pointer",
+    borderRadius:"10px",
+    textAlign:"center"
+  },
+
   gameThumb:{fontSize:"40px"},
-  modalOverlay:{position:"fixed",inset:0,background:"rgba(0,0,0,0.8)",display:"flex",alignItems:"center",justifyContent:"center"},
-  modal:{background:"#15151d",padding:"30px"},
-  modalClose:{position:"absolute"},
-  footer:{textAlign:"center",padding:"40px"},
+
+  modalOverlay:{
+    position:"fixed",
+    inset:0,
+    background:"rgba(0,0,0,0.8)",
+    display:"flex",
+    alignItems:"center",
+    justifyContent:"center",
+    zIndex:10
+  },
+
+  modal:{
+    background:"#15151d",
+    padding:"30px",
+    borderRadius:"10px",
+    position:"relative"
+  },
+
+  modalClose:{
+    position:"absolute",
+    top:"10px",
+    right:"10px",
+    cursor:"pointer"
+  },
+
+  footer:{
+    textAlign:"center",
+    padding:"40px",
+    position:"relative",
+    zIndex:1
+  },
+
   footerLogo:{fontWeight:900},
+
   footerCopy:{color:"#aaa"},
-  bgParticles:{position:"fixed",inset:0}
+
+  bgParticles:{
+    position:"fixed",
+    inset:0,
+    pointerEvents:"none",
+    zIndex:0
+  }
+
 };
