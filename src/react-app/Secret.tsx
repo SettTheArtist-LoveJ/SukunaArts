@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Love1 from "./LOVES/Love1";
+import Love2 from "./LOVES/Love2";
 
 export default function Secret() {
   const [date, setDate] = useState("");
@@ -141,6 +142,7 @@ export default function Secret() {
               </button>
 
               {openBox === 1 && <Love1 />}
+              {openBox === 2 && <Love2 />}
             </div>
           </div>
         )}
