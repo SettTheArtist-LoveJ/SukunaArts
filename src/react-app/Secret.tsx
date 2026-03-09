@@ -98,9 +98,11 @@ export default function Secret() {
             <div
               style={{
                 backgroundColor: "white",
-                width: "95vw",
-                height: "90vh",
-                maxWidth: "900px",
+                width: window.innerWidth < 600 ? "95vw" : "95vw",
+                height: window.innerWidth < 600 ? "auto" : "90vh",
+                aspectRatio: window.innerWidth < 600 ? "1 / 1" : "auto",
+                maxWidth: window.innerWidth < 600 ? "500px" : "900px",
+                height: "auto",
                 borderRadius: "20px",
                 padding: "25px",
                 position: "relative",
