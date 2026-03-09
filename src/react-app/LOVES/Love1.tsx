@@ -148,14 +148,15 @@ export default function Love1() {
       <style>{`
 
 .scene{
-  width:55vw;
-  height:85vh;
+  width:100%;
+  height:100%;
   display:flex;
   align-items:center;
   justify-content:center;
   background:linear-gradient(to bottom,#000,#2a3a6b);
   overflow:hidden;
   position:relative;
+  border-radius:20px;
 }
 
 .music-player{
