@@ -68,29 +68,33 @@ export default function Secret() {
           ))}
         </div>
 
-        {/* VENTANA GRANDE */}
+        {/* VENTANA GRANDE RESPONSIVA */}
         {openBox !== null && (
           <div
             style={{
               position: "fixed",
               top: 0,
               left: 0,
-              width: "100%",
-              height: "100%",
+              width: "100vw",
+              height: "100vh",
               backgroundColor: "rgba(0,0,0,0.5)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
+              padding: "10px",
             }}
           >
             <div
               style={{
                 backgroundColor: "white",
-                width: "600px",
-                height: "400px",
-                borderRadius: "15px",
-                padding: "20px",
+                width: "95vw",
+                height: "90vh",
+                maxWidth: "900px",
+                borderRadius: "20px",
+                padding: "25px",
                 position: "relative",
+                overflow: "auto",
+                boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
               }}
             >
               {/* BOTON SALIR */}
@@ -98,13 +102,14 @@ export default function Secret() {
                 onClick={() => setOpenBox(null)}
                 style={{
                   position: "absolute",
-                  top: "10px",
-                  right: "10px",
+                  top: "15px",
+                  right: "15px",
                   backgroundColor: "#ff6fa3",
                   color: "white",
                   border: "none",
-                  borderRadius: "6px",
-                  padding: "5px 10px",
+                  borderRadius: "8px",
+                  padding: "8px 14px",
+                  fontSize: "14px",
                   cursor: "pointer",
                 }}
               >
