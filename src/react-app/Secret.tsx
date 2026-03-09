@@ -16,7 +16,6 @@ export default function Secret() {
     }
   }
 
-  // 🔓 AREA SECRETA
   if (access) {
     return (
       <div
@@ -31,16 +30,24 @@ export default function Secret() {
           padding: "20px",
         }}
       >
-        <h1 style={{ fontSize: "4rem", color: "#ff6fa3", marginBottom: "40px" }}>
+        <h1
+          style={{
+            fontSize: "clamp(2.5rem, 6vw, 4rem)",
+            color: "#ff6fa3",
+            marginBottom: "40px",
+          }}
+        >
           LOVE 💖
         </h1>
 
-        {/* Cuadros */}
+        {/* CUADROS RESPONSIVOS */}
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3, 150px)",
-            gridGap: "20px",
+            gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))",
+            gap: "20px",
+            width: "100%",
+            maxWidth: "600px",
           }}
         >
           {[1, 2, 3, 4, 5, 6].map((num) => (
@@ -48,20 +55,24 @@ export default function Secret() {
               key={num}
               onClick={() => setOpenBox(num)}
               style={{
-                width: "150px",
-                height: "150px",
+                width: "100%",
+                aspectRatio: "1 / 1",
                 backgroundColor: "#fff",
                 borderRadius: "12px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                fontSize: "1.5rem",
+                fontSize: "clamp(1rem, 4vw, 1.5rem)",
                 boxShadow: "0 4px 8px rgba(0,0,0,0.2)",
                 cursor: "pointer",
                 transition: "transform 0.2s",
               }}
-              onMouseEnter={(e) => (e.currentTarget.style.transform = "scale(1.1)")}
-              onMouseLeave={(e) => (e.currentTarget.style.transform = "scale(1)")}
+              onMouseEnter={(e) =>
+                (e.currentTarget.style.transform = "scale(1.08)")
+              }
+              onMouseLeave={(e) =>
+                (e.currentTarget.style.transform = "scale(1)")
+              }
             >
               Cuadro {num}
             </div>
@@ -97,7 +108,6 @@ export default function Secret() {
                 boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
               }}
             >
-              {/* BOTON SALIR */}
               <button
                 onClick={() => setOpenBox(null)}
                 style={{
@@ -116,7 +126,6 @@ export default function Secret() {
                 Salir
               </button>
 
-              {/* CONTENIDO */}
               {openBox === 1 && <Love1 />}
             </div>
           </div>
@@ -125,7 +134,6 @@ export default function Secret() {
     );
   }
 
-  // 🔒 FORMULARIO
   return (
     <div
       style={{
