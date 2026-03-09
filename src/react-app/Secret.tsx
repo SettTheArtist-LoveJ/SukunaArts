@@ -115,6 +115,7 @@ export default function Secret() {
                   position: "absolute",
                   top: "15px",
                   right: "15px",
+                  zIndex: 9999,
                   backgroundColor: "#ff6fa3",
                   color: "white",
                   border: "none",
