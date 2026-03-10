@@ -8,7 +8,6 @@ export default function Love2() {
 
   useEffect(() => {
     if (started) {
-      // Inicializamos burbujas
       const initialBubbles = Array.from({ length: 40 }).map((_, i) => ({
         id: i,
         size: Math.random() * 12 + 6,
@@ -16,11 +15,10 @@ export default function Love2() {
         duration: 4 + Math.random() * 4,
         delay: Math.random() * 2,
         sway: Math.random() * 20 - 10,
-        curve: Math.random() * 30 - 15, // para movimiento curvo
+        curve: Math.random() * 30 - 15,
       }));
       setBubbles(initialBubbles);
 
-      // Generación continua
       const interval = setInterval(() => {
         const newBubble = {
           id: Date.now(),
@@ -48,6 +46,7 @@ export default function Love2() {
         borderRadius: "20px",
       }}
     >
+
       {/* OVERLAY INICIAL */}
       {!started && (
         <div
@@ -78,6 +77,7 @@ export default function Love2() {
           >
             TOCA PARA ABRIR
           </h2>
+
           <img
             src="https://www.dropbox.com/scl/fi/cmqvcdkq1ddgvhzwk2pn6/image.png?rlkey=79mreuh53xqegx80hy6drn77p&raw=1"
             alt="Abrime"
@@ -106,6 +106,22 @@ export default function Love2() {
         ></div>
       )}
 
+      {/* FLORES (Index.html) */}
+      {started && (
+        <iframe
+          src="/Item/index.html"
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            border: "none",
+            zIndex: 1
+          }}
+        />
+      )}
+
       {/* BURBUJAS */}
       {started &&
         bubbles.map((b) => (
@@ -113,7 +129,7 @@ export default function Love2() {
             key={b.id}
             style={{
               position: "absolute",
-              bottom: "-20px", // empieza justo debajo
+              bottom: "-20px",
               left: `${b.left}%`,
               width: `${b.size}px`,
               height: `${b.size}px`,
@@ -121,6 +137,7 @@ export default function Love2() {
               background: "rgba(255,255,255,0.6)",
               animation: `rise-${b.id} ${b.duration}s linear forwards`,
               animationDelay: `${b.delay}s`,
+              zIndex: 2,
               "--sway": `${b.sway}px`,
               "--curve": `${b.curve}px`,
             } as any}
@@ -163,6 +180,7 @@ export default function Love2() {
           ).join("\n")}
         `}
       </style>
+
     </div>
   );
 }
