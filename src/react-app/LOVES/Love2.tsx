@@ -144,7 +144,7 @@ export default function Love2() {
     alt="foto"
     style={{
       position: "absolute",
-      top: "4vh",
+      top: "3vh",
       right: "4vw",
 
       width: "15vw",        // 🔥 se adapta al ancho de pantalla
