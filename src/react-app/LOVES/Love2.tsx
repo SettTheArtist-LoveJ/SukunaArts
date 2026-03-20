@@ -138,7 +138,34 @@ export default function Love2() {
     flores para ti mi amor <br /> 💖
   </div>
 )}
+{started && (
+  <img
+    src="/Item/paraisolove.png"
+    alt="foto"
+    style={{
+      position: "absolute",
+      top: "5vh",
+      right: "5vw",
 
+      width: "35vw",        // 🔥 se adapta al ancho de pantalla
+      height: "35vw",
+
+      maxWidth: "220px",    // límite en PC
+      maxHeight: "220px",
+
+      minWidth: "100px",     // límite en celulares pequeños
+      minHeight: "100px",
+
+      borderRadius: "50%",
+      objectFit: "cover",
+
+      border: "3px solid white",
+      boxShadow: "0 0 15px #ff6bb3",
+
+      zIndex: 3
+    }}
+  />
+)}
       {/* BURBUJAS */}
       {started &&
         bubbles.map((b) => (
