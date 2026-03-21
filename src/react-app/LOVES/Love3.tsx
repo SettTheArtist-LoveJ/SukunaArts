@@ -42,11 +42,8 @@ export default function CorazonParticulas() {
       mouse: { radius: 100 },
     };
 
-    // 🔥 SOLO MEJORAMOS ESTO
     function resizeCanvas() {
-      const parent = heartCanvas.parentElement;
-      if (!parent) return;
-
+      const parent = heartCanvas.parentElement!;
       const rect = parent.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
 
@@ -142,27 +139,9 @@ export default function CorazonParticulas() {
     }
 
     class Particle {
-      x: number;
-      y: number;
-      baseX: number;
-      baseY: number;
-      size: number;
-      density: number;
-      isTextParticle: boolean;
-      color: string;
-      trembleOffset: number;
-      trembleSpeed: number;
-      trembleAmplitude: number;
-      orbitOffset: number;
-      orbitSpeed: number;
-      orbitRadius: number;
-
-      constructor(x: number, y: number, isText = false) {
-        this.x = x;
-        this.y = y;
+      constructor(public x: number, public y: number, isText = false) {
         this.baseX = x;
         this.baseY = y;
-        this.isTextParticle = isText;
 
         const cfg = isText ? config.text : config.heart;
 
@@ -186,6 +165,18 @@ export default function CorazonParticulas() {
           Math.random() * cfg.orbitSpeedRange + cfg.orbitSpeedMin;
         this.orbitRadius = cfg.orbitRadius * scaleFactor;
       }
+
+      baseX: number;
+      baseY: number;
+      size: number;
+      density: number;
+      color: string;
+      trembleOffset: number;
+      trembleSpeed: number;
+      trembleAmplitude: number;
+      orbitOffset: number;
+      orbitSpeed: number;
+      orbitRadius: number;
 
       draw() {
         ctx.beginPath();
@@ -232,41 +223,6 @@ export default function CorazonParticulas() {
       }
     }
 
-    function createTextParticles() {
-      const rect = heartCanvas.getBoundingClientRect();
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      const text = "Te amo ❤️";
-
-      const fontSize =
-        Math.min(heartCanvas.width, heartCanvas.height) *
-        (isMobile ? config.text.fontSizeMobile : config.text.fontSizeDesktop);
-
-      const tempCanvas = document.createElement("canvas");
-      const tempCtx = tempCanvas.getContext("2d")!;
-
-      tempCanvas.width = heartCanvas.width;
-      tempCanvas.height = heartCanvas.height;
-
-      tempCtx.font = `bold ${fontSize}px Arial`;
-      tempCtx.fillStyle = "white";
-      tempCtx.textAlign = "center";
-      tempCtx.textBaseline = "middle";
-
-      tempCtx.fillText(text, centerX, centerY);
-
-      const data = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height).data;
-
-      for (let y = 0; y < tempCanvas.height; y += 2) {
-        for (let x = 0; x < tempCanvas.width; x += 2) {
-          const i = (y * tempCanvas.width + x) * 4;
-          if (data[i + 3] > 128) {
-            particles.push(new Particle(x, y, true));
-          }
-        }
-      }
-    }
-
     function init() {
       particles.length = 0;
       stars.length = 0;
@@ -276,8 +232,7 @@ export default function CorazonParticulas() {
       const centerY = rect.height / 2;
 
       const scale =
-        Math.min(heartCanvas.width, heartCanvas.height) *
-        (isMobile ? config.heart.scaleFactor : config.heart.scaleFactorDesktop) * 1.3;
+        Math.min(heartCanvas.width, heartCanvas.height) * 0.3;
 
       for (let i = 0; i < config.heart.particleCount; i++) {
         const t = Math.random() * Math.PI * 2;
@@ -297,11 +252,7 @@ export default function CorazonParticulas() {
         );
       }
 
-      for (let i = 0; i < 150; i++) {
-        stars.push(new Star());
-      }
-
-      createTextParticles();
+      for (let i = 0; i < 150; i++) stars.push(new Star());
     }
 
     let animationId: number;
@@ -316,19 +267,20 @@ export default function CorazonParticulas() {
     init();
     animate();
 
-    return () => {
-      cancelAnimationFrame(animationId);
-      heartCanvas.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("touchmove", handleTouchMove);
-      window.removeEventListener("resize", handleResize);
-    };
+    return () => cancelAnimationFrame(animationId);
   }, []);
 
-  // 🔥 SOLO CAMBIO VISUAL (CLAVE)
   return (
-    <div style={{ width: "100%", height: "100%", position: "relative" }}>
-      <canvas ref={bgRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 1 }} />
-      <canvas ref={heartRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 2 }} />
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        minHeight: "60vh", // 🔥 SOLUCIÓN PARA CELULAR
+        position: "relative",
+      }}
+    >
+      <canvas ref={bgRef} style={{ position: "absolute", inset: 0 }} />
+      <canvas ref={heartRef} style={{ position: "absolute", inset: 0 }} />
     </div>
   );
 }
