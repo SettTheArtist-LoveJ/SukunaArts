@@ -65,7 +65,17 @@ export default function CorazonParticulas() {
     const particles: any[] = [];
     const stars: any[] = [];
 
-    const mouse = { x: 0, y: 0, radius: 0 };
+    // ✅ USAR TAMAÑO REAL DEL CONTENEDOR
+    const rectInit = heartCanvas.parentElement!.getBoundingClientRect();
+    const isMobile = rectInit.width <= 768;
+
+    const scaleFactor = Math.min(rectInit.width, rectInit.height) / 600;
+
+    const mouse = {
+      x: 0,
+      y: 0,
+      radius: config.mouse.radius * scaleFactor,
+    };
 
     class Star {
       x: number;
@@ -73,6 +83,7 @@ export default function CorazonParticulas() {
       size: number;
       opacity: number;
       speed: number;
+
       constructor() {
         const rect = backgroundCanvas.getBoundingClientRect();
         this.x = Math.random() * rect.width;
@@ -81,11 +92,13 @@ export default function CorazonParticulas() {
         this.opacity = Math.random();
         this.speed = Math.random() * 0.02 + 0.005;
       }
+
       update() {
         this.opacity += this.speed;
         if (this.opacity >= 1 || this.opacity <= 0) this.speed *= -1;
         this.draw();
       }
+
       draw() {
         bgCtx.beginPath();
         bgCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
@@ -137,43 +150,65 @@ export default function CorazonParticulas() {
       orbitOffset: number;
       orbitSpeed: number;
       orbitRadius: number;
+
       constructor(x: number, y: number, isText = false) {
         this.x = x;
         this.y = y;
         this.baseX = x;
         this.baseY = y;
         this.isTextParticle = isText;
+
         const cfg = isText ? config.text : config.heart;
-        this.size = (Math.random() * cfg.particleSizeRange + cfg.particleSizeMin) * 1;
-        this.density = Math.random() * cfg.densityRange + cfg.densityMin;
+
+        this.size =
+          (Math.random() * cfg.particleSizeRange + cfg.particleSizeMin) *
+          scaleFactor;
+
+        this.density =
+          Math.random() * cfg.densityRange + cfg.densityMin;
+
         this.color = isText
           ? `hsl(${350 + Math.random() * 20},100%,90%)`
           : `hsl(${345 + Math.random() * 10},100%,70%)`;
+
         this.trembleOffset = Math.random() * Math.PI * 2;
         this.trembleSpeed = Math.random() * 0.1 + 0.06;
-        this.trembleAmplitude = cfg.trembleAmplitude;
+        this.trembleAmplitude = cfg.trembleAmplitude * scaleFactor;
+
         this.orbitOffset = Math.random() * Math.PI * 2;
-        this.orbitSpeed = Math.random() * cfg.orbitSpeedRange + cfg.orbitSpeedMin;
-        this.orbitRadius = cfg.orbitRadius;
+        this.orbitSpeed =
+          Math.random() * cfg.orbitSpeedRange + cfg.orbitSpeedMin;
+        this.orbitRadius = cfg.orbitRadius * scaleFactor;
       }
+
       draw() {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fillStyle = this.color;
         ctx.fill();
       }
+
       update() {
         const time = Date.now() * 0.001;
+
         const trembleX =
-          Math.sin(time * this.trembleSpeed + this.trembleOffset) * this.trembleAmplitude;
+          Math.sin(time * this.trembleSpeed + this.trembleOffset) *
+          this.trembleAmplitude;
         const trembleY =
-          Math.cos(time * this.trembleSpeed + this.trembleOffset) * this.trembleAmplitude;
-        const orbitX = Math.sin(time * this.orbitSpeed + this.orbitOffset) * this.orbitRadius;
-        const orbitY = Math.cos(time * this.orbitSpeed + this.orbitOffset) * this.orbitRadius;
+          Math.cos(time * this.trembleSpeed + this.trembleOffset) *
+          this.trembleAmplitude;
+
+        const orbitX =
+          Math.sin(time * this.orbitSpeed + this.orbitOffset) *
+          this.orbitRadius;
+        const orbitY =
+          Math.cos(time * this.orbitSpeed + this.orbitOffset) *
+          this.orbitRadius;
 
         const dx = mouse.x - this.x;
         const dy = mouse.y - this.y;
         const distance = Math.hypot(dx, dy);
+
         const force = (mouse.radius - distance) / mouse.radius;
 
         const targetX = this.baseX + trembleX + orbitX;
@@ -196,14 +231,17 @@ export default function CorazonParticulas() {
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
       const text = "Te amo ❤️";
-      const isMobile = rect.width <= 768;
 
+      // ✅ usar tamaño visible real
       const fontSize =
         Math.min(rect.width, rect.height) *
-        (isMobile ? config.text.fontSizeMobile : config.text.fontSizeDesktop);
+        (rect.width <= 768
+          ? config.text.fontSizeMobile
+          : config.text.fontSizeDesktop);
 
       const tempCanvas = document.createElement("canvas");
       const tempCtx = tempCanvas.getContext("2d")!;
+
       tempCanvas.width = rect.width;
       tempCanvas.height = rect.height;
 
@@ -211,6 +249,7 @@ export default function CorazonParticulas() {
       tempCtx.fillStyle = "white";
       tempCtx.textAlign = "center";
       tempCtx.textBaseline = "middle";
+
       tempCtx.fillText(text, centerX, centerY);
 
       const data = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height).data;
@@ -218,7 +257,9 @@ export default function CorazonParticulas() {
       for (let y = 0; y < tempCanvas.height; y += 2) {
         for (let x = 0; x < tempCanvas.width; x += 2) {
           const i = (y * tempCanvas.width + x) * 4;
-          if (data[i + 3] > 128) particles.push(new Particle(x, y, true));
+          if (data[i + 3] > 128) {
+            particles.push(new Particle(x, y, true));
+          }
         }
       }
     }
@@ -230,17 +271,17 @@ export default function CorazonParticulas() {
       const rect = heartCanvas.getBoundingClientRect();
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
-      const isMobile = rect.width <= 768;
 
-      // 🔥 SOLO CAMBIO AQUÍ (quitado * 1.3)
+      // ✅ ESCALA CORRECTA (basada en el cuadro, no pantalla)
       const scale =
         Math.min(rect.width, rect.height) *
-        (isMobile ? 0.55 : config.heart.scaleFactorDesktop);
-
-      mouse.radius = config.mouse.radius * (Math.min(rect.width, rect.height) / 600);
+        (rect.width <= 768
+          ? config.heart.scaleFactor
+          : config.heart.scaleFactorDesktop);
 
       for (let i = 0; i < config.heart.particleCount; i++) {
         const t = Math.random() * Math.PI * 2;
+
         const x = 16 * Math.pow(Math.sin(t), 3);
         const y =
           -(13 * Math.cos(t) -
@@ -248,19 +289,23 @@ export default function CorazonParticulas() {
             2 * Math.cos(3 * t) -
             Math.cos(4 * t));
 
-        const p = new Particle(centerX + (x * scale) / 16, centerY + (y * scale) / 16);
-        p.size *= Math.min(rect.width, rect.height) / 600;
-        p.trembleAmplitude *= Math.min(rect.width, rect.height) / 600;
-        p.orbitRadius *= Math.min(rect.width, rect.height) / 600;
-        particles.push(p);
+        particles.push(
+          new Particle(
+            centerX + (x * scale) / 16,
+            centerY + (y * scale) / 16
+          )
+        );
       }
 
-      for (let i = 0; i < 150; i++) stars.push(new Star());
+      for (let i = 0; i < 150; i++) {
+        stars.push(new Star());
+      }
 
       createTextParticles();
     }
 
     let animationId: number;
+
     function animate() {
       drawBackground();
       ctx.clearRect(0, 0, heartCanvas.width, heartCanvas.height);
@@ -281,14 +326,8 @@ export default function CorazonParticulas() {
 
   return (
     <>
-      <canvas
-        ref={bgRef}
-        style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 1 }}
-      />
-      <canvas
-        ref={heartRef}
-        style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 2 }}
-      />
+      <canvas ref={bgRef} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 1 }} />
+      <canvas ref={heartRef} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 2 }} />
     </>
   );
 }
