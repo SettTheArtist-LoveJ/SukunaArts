@@ -21,16 +21,6 @@ export default function TeAmo() {
       >
         💖 Te amo 💖
       </h1>
-
-      <style>
-        {`
-          @keyframes latido {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-          }
-        `}
-      </style>
     </div>
   );
 }
