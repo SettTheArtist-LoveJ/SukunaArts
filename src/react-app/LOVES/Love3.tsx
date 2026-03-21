@@ -43,22 +43,18 @@ export default function CorazonParticulas() {
     };
 
     function resizeCanvas() {
-      const parent = heartCanvas.parentElement!;
-      const rect = parent.getBoundingClientRect();
+      const rect = heartCanvas.parentElement!.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
 
-      const width = rect.width;
-      const height = rect.height;
+      backgroundCanvas.width = rect.width * dpr;
+      backgroundCanvas.height = rect.height * dpr;
+      heartCanvas.width = rect.width * dpr;
+      heartCanvas.height = rect.height * dpr;
 
-      backgroundCanvas.width = width * dpr;
-      backgroundCanvas.height = height * dpr;
-      heartCanvas.width = width * dpr;
-      heartCanvas.height = height * dpr;
-
-      backgroundCanvas.style.width = width + "px";
-      backgroundCanvas.style.height = height + "px";
-      heartCanvas.style.width = width + "px";
-      heartCanvas.style.height = height + "px";
+      backgroundCanvas.style.width = rect.width + "px";
+      backgroundCanvas.style.height = rect.height + "px";
+      heartCanvas.style.width = rect.width + "px";
+      heartCanvas.style.height = rect.height + "px";
 
       bgCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -67,7 +63,7 @@ export default function CorazonParticulas() {
     resizeCanvas();
 
     const particles: any[] = [];
-    const stars: any[] = [];
+    const stars: any[] = []; // ⭐ NUEVO
 
     const isMobile = heartCanvas.width <= 768;
 
@@ -80,6 +76,7 @@ export default function CorazonParticulas() {
       radius: config.mouse.radius * scaleFactor,
     };
 
+    // ⭐ CLASE ESTRELLA
     class Star {
       x: number;
       y: number;
@@ -98,7 +95,11 @@ export default function CorazonParticulas() {
 
       update() {
         this.opacity += this.speed;
-        if (this.opacity >= 1 || this.opacity <= 0) this.speed *= -1;
+
+        if (this.opacity >= 1 || this.opacity <= 0) {
+          this.speed *= -1;
+        }
+
         this.draw();
       }
 
@@ -132,16 +133,36 @@ export default function CorazonParticulas() {
     window.addEventListener("touchmove", handleTouchMove, { passive: false });
     window.addEventListener("resize", handleResize);
 
+    // ⭐ NUEVO FONDO
     function drawBackground() {
       bgCtx.fillStyle = "black";
       bgCtx.fillRect(0, 0, backgroundCanvas.width, backgroundCanvas.height);
+
       stars.forEach((star) => star.update());
     }
 
     class Particle {
-      constructor(public x: number, public y: number, isText = false) {
+      x: number;
+      y: number;
+      baseX: number;
+      baseY: number;
+      size: number;
+      density: number;
+      isTextParticle: boolean;
+      color: string;
+      trembleOffset: number;
+      trembleSpeed: number;
+      trembleAmplitude: number;
+      orbitOffset: number;
+      orbitSpeed: number;
+      orbitRadius: number;
+
+      constructor(x: number, y: number, isText = false) {
+        this.x = x;
+        this.y = y;
         this.baseX = x;
         this.baseY = y;
+        this.isTextParticle = isText;
 
         const cfg = isText ? config.text : config.heart;
 
@@ -165,18 +186,6 @@ export default function CorazonParticulas() {
           Math.random() * cfg.orbitSpeedRange + cfg.orbitSpeedMin;
         this.orbitRadius = cfg.orbitRadius * scaleFactor;
       }
-
-      baseX: number;
-      baseY: number;
-      size: number;
-      density: number;
-      color: string;
-      trembleOffset: number;
-      trembleSpeed: number;
-      trembleAmplitude: number;
-      orbitOffset: number;
-      orbitSpeed: number;
-      orbitRadius: number;
 
       draw() {
         ctx.beginPath();
@@ -223,16 +232,52 @@ export default function CorazonParticulas() {
       }
     }
 
+    function createTextParticles() {
+      const rect = heartCanvas.getBoundingClientRect();
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const text = "Te amo ❤️";
+
+      const fontSize =
+        Math.min(heartCanvas.width, heartCanvas.height) *
+        (isMobile ? config.text.fontSizeMobile : config.text.fontSizeDesktop);
+
+      const tempCanvas = document.createElement("canvas");
+      const tempCtx = tempCanvas.getContext("2d")!;
+
+      tempCanvas.width = heartCanvas.width;
+      tempCanvas.height = heartCanvas.height;
+
+      tempCtx.font = `bold ${fontSize}px Arial`;
+      tempCtx.fillStyle = "white";
+      tempCtx.textAlign = "center";
+      tempCtx.textBaseline = "middle";
+
+      tempCtx.fillText(text, centerX, centerY);
+
+      const data = tempCtx.getImageData(0, 0, tempCanvas.width, tempCanvas.height).data;
+
+      for (let y = 0; y < tempCanvas.height; y += 2) {
+        for (let x = 0; x < tempCanvas.width; x += 2) {
+          const i = (y * tempCanvas.width + x) * 4;
+          if (data[i + 3] > 128) {
+            particles.push(new Particle(x, y, true));
+          }
+        }
+      }
+    }
+
     function init() {
       particles.length = 0;
-      stars.length = 0;
+      stars.length = 0; // ⭐ reset estrellas
 
       const rect = heartCanvas.getBoundingClientRect();
       const centerX = rect.width / 2;
       const centerY = rect.height / 2;
 
       const scale =
-        Math.min(heartCanvas.width, heartCanvas.height) * 0.3;
+        Math.min(heartCanvas.width, heartCanvas.height) *
+        (isMobile ? config.heart.scaleFactor : config.heart.scaleFactorDesktop) * 1.3;
 
       for (let i = 0; i < config.heart.particleCount; i++) {
         const t = Math.random() * Math.PI * 2;
@@ -252,7 +297,12 @@ export default function CorazonParticulas() {
         );
       }
 
-      for (let i = 0; i < 150; i++) stars.push(new Star());
+      // ⭐ crear estrellas
+      for (let i = 0; i < 150; i++) {
+        stars.push(new Star());
+      }
+
+      createTextParticles();
     }
 
     let animationId: number;
@@ -260,27 +310,28 @@ export default function CorazonParticulas() {
     function animate() {
       drawBackground();
       ctx.clearRect(0, 0, heartCanvas.width, heartCanvas.height);
+
       particles.forEach((p) => p.update());
+
       animationId = requestAnimationFrame(animate);
     }
 
     init();
     animate();
 
-    return () => cancelAnimationFrame(animationId);
+    return () => {
+      cancelAnimationFrame(animationId);
+      heartCanvas.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("touchmove", handleTouchMove);
+      window.removeEventListener("resize", handleResize);
+    };
+
   }, []);
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        minHeight: "60vh", // 🔥 SOLUCIÓN PARA CELULAR
-        position: "relative",
-      }}
-    >
-      <canvas ref={bgRef} style={{ position: "absolute", inset: 0 }} />
-      <canvas ref={heartRef} style={{ position: "absolute", inset: 0 }} />
-    </div>
+    <>
+      <canvas ref={bgRef} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 1 }} />
+      <canvas ref={heartRef} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 2 }} />
+    </>
   );
 }
