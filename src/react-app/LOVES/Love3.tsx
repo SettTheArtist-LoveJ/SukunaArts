@@ -42,19 +42,26 @@ export default function CorazonParticulas() {
       mouse: { radius: 100 },
     };
 
+    // 🔥 SOLO MEJORAMOS ESTO
     function resizeCanvas() {
-      const rect = heartCanvas.parentElement!.getBoundingClientRect();
+      const parent = heartCanvas.parentElement;
+      if (!parent) return;
+
+      const rect = parent.getBoundingClientRect();
       const dpr = window.devicePixelRatio || 1;
 
-      backgroundCanvas.width = rect.width * dpr;
-      backgroundCanvas.height = rect.height * dpr;
-      heartCanvas.width = rect.width * dpr;
-      heartCanvas.height = rect.height * dpr;
+      const width = rect.width;
+      const height = rect.height;
 
-      backgroundCanvas.style.width = rect.width + "px";
-      backgroundCanvas.style.height = rect.height + "px";
-      heartCanvas.style.width = rect.width + "px";
-      heartCanvas.style.height = rect.height + "px";
+      backgroundCanvas.width = width * dpr;
+      backgroundCanvas.height = height * dpr;
+      heartCanvas.width = width * dpr;
+      heartCanvas.height = height * dpr;
+
+      backgroundCanvas.style.width = width + "px";
+      backgroundCanvas.style.height = height + "px";
+      heartCanvas.style.width = width + "px";
+      heartCanvas.style.height = height + "px";
 
       bgCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -63,7 +70,7 @@ export default function CorazonParticulas() {
     resizeCanvas();
 
     const particles: any[] = [];
-    const stars: any[] = []; // ⭐ NUEVO
+    const stars: any[] = [];
 
     const isMobile = heartCanvas.width <= 768;
 
@@ -76,7 +83,6 @@ export default function CorazonParticulas() {
       radius: config.mouse.radius * scaleFactor,
     };
 
-    // ⭐ CLASE ESTRELLA
     class Star {
       x: number;
       y: number;
@@ -95,11 +101,7 @@ export default function CorazonParticulas() {
 
       update() {
         this.opacity += this.speed;
-
-        if (this.opacity >= 1 || this.opacity <= 0) {
-          this.speed *= -1;
-        }
-
+        if (this.opacity >= 1 || this.opacity <= 0) this.speed *= -1;
         this.draw();
       }
 
@@ -133,11 +135,9 @@ export default function CorazonParticulas() {
     window.addEventListener("touchmove", handleTouchMove, { passive: false });
     window.addEventListener("resize", handleResize);
 
-    // ⭐ NUEVO FONDO
     function drawBackground() {
       bgCtx.fillStyle = "black";
       bgCtx.fillRect(0, 0, backgroundCanvas.width, backgroundCanvas.height);
-
       stars.forEach((star) => star.update());
     }
 
@@ -269,7 +269,7 @@ export default function CorazonParticulas() {
 
     function init() {
       particles.length = 0;
-      stars.length = 0; // ⭐ reset estrellas
+      stars.length = 0;
 
       const rect = heartCanvas.getBoundingClientRect();
       const centerX = rect.width / 2;
@@ -297,7 +297,6 @@ export default function CorazonParticulas() {
         );
       }
 
-      // ⭐ crear estrellas
       for (let i = 0; i < 150; i++) {
         stars.push(new Star());
       }
@@ -310,9 +309,7 @@ export default function CorazonParticulas() {
     function animate() {
       drawBackground();
       ctx.clearRect(0, 0, heartCanvas.width, heartCanvas.height);
-
       particles.forEach((p) => p.update());
-
       animationId = requestAnimationFrame(animate);
     }
 
@@ -325,13 +322,13 @@ export default function CorazonParticulas() {
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("resize", handleResize);
     };
-
   }, []);
 
+  // 🔥 SOLO CAMBIO VISUAL (CLAVE)
   return (
-    <>
-      <canvas ref={bgRef} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 1 }} />
-      <canvas ref={heartRef} style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", zIndex: 2 }} />
-    </>
+    <div style={{ width: "100%", height: "100%", position: "relative" }}>
+      <canvas ref={bgRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 1 }} />
+      <canvas ref={heartRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 2 }} />
+    </div>
   );
 }
