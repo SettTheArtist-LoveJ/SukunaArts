@@ -111,8 +111,6 @@ function resizeCanvas() {
     function drawBackground() {
       bgCtx.clearRect(0, 0, backgroundCanvas.width, backgroundCanvas.height);
 
-      const time = Date.now();
-
       const rect = backgroundCanvas.getBoundingClientRect();
 
 const gradient = bgCtx.createRadialGradient(
